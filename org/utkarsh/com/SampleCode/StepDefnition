@@ -1,0 +1,88 @@
+package org.utkarsh.com.SampleCode;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import junit.framework.Assert;
+
+import org.openqa.selenium.WebDriver;
+
+import cucumber.api.DataTable;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+
+public class StepDefnition {
+
+	WebDriver driver;
+	boolean objective1, objective2, objective3, objective4, objective5;
+	PageObjectsDemo pob;
+
+	@Given("^user should be able to launch the application in \"([^\"]*)\"$")
+	public void launchApp(String arg1) {
+		if (arg1.contains("chrome")) {
+			System.setProperty("webdriver.chrome.driver",
+					"./lib/chromedriver.exe");
+			driver.get("https://www.exercise1.com/values");
+			pob = new PageObjectsDemo(driver);
+		}
+
+	}
+
+	@Given("^validate the values appeared on the screen to be right$")
+	public void validateValuesAppearence(DataTable arg1) {
+		List<List<String>> data = arg1.raw();
+		LinkedList<String> actual=pob.getValuesLabels();
+		objective1 = actual.contains(data.get(1).get(1))&&
+				actual.contains(data.get(2).get(1))&&
+				actual.contains(data.get(3).get(1))&&
+				actual.contains(data.get(4).get(1))&&
+				actual.contains(data.get(5).get(1));
+	}
+
+	@Given("^validate the values of the screen to be greater than Zero$")
+	public void validateMorethan0(DataTable arg1) {
+
+		LinkedList<String> actual=pob.getValues();
+		objective2 = Integer.parseInt(actual.get(0).replace("$", ""))>0&&
+				Integer.parseInt(actual.get(1).replace("$", ""))>0&&
+				Integer.parseInt(actual.get(2).replace("$", ""))>0&&
+				Integer.parseInt(actual.get(3).replace("$", ""))>0&&
+				Integer.parseInt(actual.get(4).replace("$", ""))>0;
+	}
+
+	@Given("^validate the total balance appeared on the screen$")
+	public void validateBalance() {
+		objective3 = pob.getTotalValue().equals("$1,000,000.00");
+	}
+
+	@Given("^validate the values need to be formated as per the currency$")
+	public void validateCurrency() {
+		LinkedList<String> actual=pob.getValues();
+		objective4 = actual.get(0).startsWith("$")&&
+				actual.get(1).startsWith("$")&&
+				actual.get(2).startsWith("$")&&
+				actual.get(3).startsWith("$")&&
+				actual.get(4).startsWith("$");
+	
+	}
+
+	@Given("^validate the total balance matching the sum of the values$")
+	public void validateTotalSum() {
+		
+		LinkedList<String> actual=pob.getValues();
+		int sum = Integer.parseInt(actual.get(0).replace("$", ""))+
+				Integer.parseInt(actual.get(1).replace("$", ""))+
+				Integer.parseInt(actual.get(2).replace("$", ""))+
+				Integer.parseInt(actual.get(3).replace("$", ""))+
+				Integer.parseInt(actual.get(4).replace("$", ""));
+	int displayed=	Integer.parseInt(pob.getTotalValue().replace("$",""));
+	objective5=sum==displayed;
+		
+	}
+
+	@Then("^Test will be passed if all the above statements passes$")
+	public void testStatus() {
+		Assert.assertTrue(objective1&&objective2&&objective3&&objective4&&objective5);
+	}
+
+}

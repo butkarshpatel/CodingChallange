@@ -1,0 +1,19 @@
+package commons;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+public class SeleniumFunctions {
+
+	public WebElement findElementByID(String idval,WebDriver driver)
+	{
+		return driver.findElement(By.id(idval));
+	}
+	
+	public String getText(WebElement ele)
+	{
+		return ele.getText();
+	}
+
+}
